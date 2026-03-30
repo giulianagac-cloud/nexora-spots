@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXORA — Spot 1</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.stage {
+  width: 405px;
+  height: 720px;
+  background: #080810;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Partículas */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: #00e5a0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* Escenas */
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scene.active { pointer-events: auto; }
+
+/* Escena 1 — Hook */
+#s1 .line {
+  font-size: 28px;
+  font-weight: 700;
+  color: #f0f0f5;
+  text-align: center;
+  line-height: 1.4;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+}
+
+/* Escena 2 — Dolor */
+#s2 .pain-line {
+  font-size: 32px;
+  font-weight: 800;
+  color: #f0f0f5;
+  text-align: center;
+  margin: 8px 0;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Escena 3 — Logo */
+#s3 .logo-wrap {
+  text-align: center;
+}
+#s3 .logo-text {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  opacity: 0;
+  filter: blur(12px);
+  transform: scale(0.8);
+  text-align: center;
+  width: 100%;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.3;
+}
+#s3 .logo-white { color: #f0f0f5; }
+#s3 .logo-green { color: #00e5a0; }
+#s3 .logo-tagline {
+  font-size: 13px;
+  color: #5a5a72;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 16px;
+  opacity: 0;
+}
+
+/* Escena 4 — Servicios */
+#s4 .service {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 10px 0;
+  opacity: 0;
+  transform: translateX(60px);
+  width: 100%;
+}
+#s4 .service-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(0,229,160,0.1);
+  border: 1px solid rgba(0,229,160,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+#s4 .service-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #f0f0f5;
+}
+
+/* Escena 5 — Promesa */
+#s5 .promise-line {
+  font-size: 30px;
+  font-weight: 700;
+  color: #f0f0f5;
+  text-align: center;
+  line-height: 1.4;
+  opacity: 0;
+}
+#s5 .promise-green {
+  color: #00e5a0;
+  font-size: 48px;
+  font-weight: 800;
+}
+#s5 .cursor {
+  display: inline-block;
+  width: 3px;
+  height: 48px;
+  background: #00e5a0;
+  vertical-align: middle;
+  margin-left: 2px;
+  animation: blink .7s step-end infinite;
+  opacity: 0;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* Escena 6 — CTA */
+#s6 .cta-url {
+  font-size: 22px;
+  font-weight: 700;
+  color: #00e5a0;
+  text-align: center;
+  opacity: 0;
+  letter-spacing: 0.02em;
+}
+#s6 .cta-bio {
+  font-size: 14px;
+  color: #5a5a72;
+  text-align: center;
+  margin-top: 12px;
+  opacity: 0;
+  letter-spacing: 0.1em;
+}
+#s6 .cta-line {
+  width: 0;
+  height: 1px;
+  background: rgba(0,229,160,0.4);
+  margin: 20px auto;
+}
+
+/* Glow overlay */
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s;
+}
+.glow-green {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(0,229,160,0.12) 0%, transparent 70%);
+  bottom: -100px; right: -100px;
+}
+.glow-blue {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(0,85,255,0.08) 0%, transparent 70%);
+  top: -80px; left: -80px;
+}
+
+/* Indicador de escena */
+.scene-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  transition: all 0.3s;
+}
+.dot.active {
+  background: #00e5a0;
+  width: 20px;
+  border-radius: 3px;
+}
+
+/* Play button overlay */
+.play-hint {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  z-index: 10;
+  transition: opacity 0.3s;
+}
+
+/* Grid bg */
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0;
+  transition: opacity 1s;
+}
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <div class="grid-bg" id="grid"></div>
+  <div class="glow glow-green" id="glow-g"></div>
+  <div class="glow glow-blue" id="glow-b"></div>
+
+  <!-- S1: Hook -->
+  <div class="scene" id="s1">
+    <div class="line" id="s1-line">¿Cuántas consultas respondés<br>por WhatsApp todos los días?</div>
+  </div>
+
+  <!-- S2: Dolor -->
+  <div class="scene" id="s2">
+    <div class="pain-line" id="p1">Mismo horario.</div>
+    <div class="pain-line" id="p2">Mismas preguntas.</div>
+    <div class="pain-line" id="p3">Todos los días.</div>
+  </div>
+
+  <!-- S3: Logo reveal -->
+  <div class="scene" id="s3">
+    <div class="logo-wrap">
+      <div class="logo-text" id="logo-text">
+        <span class="logo-white">NEXORA</span><span class="logo-green">_</span><span class="logo-white">Intelligence</span>
+      </div>
+      <div class="logo-tagline" id="logo-tag">// consultoría_IT & automatización_IA</div>
+    </div>
+  </div>
+
+  <!-- S4: Servicios -->
+  <div class="scene" id="s4">
+    <div class="service" id="sv1"><div class="service-icon">⚡</div><div class="service-name">Automatización</div></div>
+    <div class="service" id="sv2"><div class="service-icon">🤖</div><div class="service-name">Bots & Asistentes IA</div></div>
+    <div class="service" id="sv3"><div class="service-icon">💻</div><div class="service-name">Desarrollo Web</div></div>
+    <div class="service" id="sv4"><div class="service-icon">🔍</div><div class="service-name">Consultoría</div></div>
+  </div>
+
+  <!-- S5: Promesa -->
+  <div class="scene" id="s5">
+    <div class="promise-line" id="pr1">Tu operación ya funciona.</div>
+    <div class="promise-line" id="pr2">Nosotros la hacemos</div>
+    <div class="promise-line" id="pr3">
+      <span class="promise-green">escalar_</span><span class="cursor" id="cur"></span>
+    </div>
+  </div>
+
+  <!-- S6: CTA -->
+  <div class="scene" id="s6">
+    <div class="cta-line" id="cta-line"></div>
+    <div class="cta-url" id="cta-url">nexoraintelligence.co</div>
+    <div class="cta-bio" id="cta-bio">// link en bio</div>
+  </div>
+
+  <div class="scene-dots">
+    <div class="dot active" id="d0"></div>
+    <div class="dot" id="d1"></div>
+    <div class="dot" id="d2"></div>
+    <div class="dot" id="d3"></div>
+    <div class="dot" id="d4"></div>
+    <div class="dot" id="d5"></div>
+  </div>
+
+  <div class="play-hint" id="hint">tocá para reproducir</div>
+</div>
+
+<script>
+const ease = (t) => t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+
+function animate(el, props, duration, delay=0) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const start = performance.now();
+      const initial = {};
+      for (const k in props) {
+        if (k === 'opacity') initial[k] = parseFloat(el.style.opacity || 0);
+        if (k === 'translateY') initial[k] = parseFloat(el.style.transform?.match(/translateY\((.+)px\)/)?.[1] || 0);
+        if (k === 'translateX') initial[k] = parseFloat(el.style.transform?.match(/translateX\((.+)px\)/)?.[1] || 0);
+        if (k === 'width') initial[k] = parseFloat(el.style.width || 0);
+        if (k === 'blur') initial[k] = parseFloat(el.style.filter?.match(/blur\((.+)px\)/)?.[1] || 0);
+        if (k === 'scale') initial[k] = parseFloat(el.style.transform?.match(/scale\((.+)\)/)?.[1] || 1);
+      }
+      function frame(now) {
+        const t = Math.min((now - start) / duration, 1);
+        const e = ease(t);
+        for (const k in props) {
+          const v = initial[k] + (props[k] - initial[k]) * e;
+          if (k === 'opacity') el.style.opacity = v;
+          if (k === 'translateY') el.style.transform = `translateY(${v}px)`;
+          if (k === 'translateX') el.style.transform = `translateX(${v}px)`;
+          if (k === 'width') el.style.width = v + 'px';
+          if (k === 'blur') el.style.filter = `blur(${v}px)`;
+          if (k === 'scale') el.style.transform = `scale(${v})`;
+        }
+        if (t < 1) requestAnimationFrame(frame);
+        else resolve();
+      }
+      requestAnimationFrame(frame);
+    }, delay);
+  });
+}
+
+function showScene(id) {
+  document.querySelectorAll('.scene').forEach(s => {
+    s.style.opacity = 0;
+    s.classList.remove('active');
+  });
+  const s = document.getElementById(id);
+  s.style.opacity = 1;
+  s.classList.add('active');
+  // dots
+  const n = parseInt(id.replace('s','')) - 1;
+  document.querySelectorAll('.dot').forEach((d,i) => {
+    d.classList.toggle('active', i === n);
+  });
+}
+
+function hideScene(id) {
+  return animate(document.getElementById(id), {opacity: 0}, 400);
+}
+
+// Typewriter
+function typewrite(el, text, speed=40) {
+  return new Promise(resolve => {
+    el.style.width = '0';
+    el.style.overflow = 'hidden';
+    el.style.whiteSpace = 'pre';
+    el.style.display = 'inline-block';
+    el.textContent = text;
+    let w = 0;
+    const full = el.scrollWidth;
+    const interval = setInterval(() => {
+      w = Math.min(w + (full * speed / 1000 * 16), full);
+      el.style.width = w + 'px';
+      if (w >= full) { clearInterval(interval); resolve(); }
+    }, 16);
+  });
+}
+
+async function runSpot() {
+  document.getElementById('hint').style.opacity = 0;
+  document.getElementById('grid').style.opacity = 1;
+  document.getElementById('glow-g').style.opacity = 1;
+  document.getElementById('glow-b').style.opacity = 1;
+
+  // === ESCENA 1 — Hook ===
+  showScene('s1');
+  const l = document.getElementById('s1-line');
+  l.style.opacity = 1;
+  l.style.width = '0';
+  l.style.overflow = 'hidden';
+  l.style.whiteSpace = 'normal';
+  l.style.display = 'block';
+  await animate(l, {opacity: 1}, 200);
+  // typewriter manual
+  const text = '¿Cuántas consultas respondés por WhatsApp todos los días?';
+  l.textContent = '';
+  await new Promise(resolve => {
+    let i = 0;
+    const iv = setInterval(() => {
+      l.textContent += text[i];
+      i++;
+      if (i >= text.length) { clearInterval(iv); resolve(); }
+    }, 35);
+  });
+  await new Promise(r => setTimeout(r, 1200));
+  await animate(document.getElementById('s1'), {opacity: 0}, 400);
+
+  // === ESCENA 2 — Dolor ===
+  showScene('s2');
+  const pains = ['p1','p2','p3'];
+  for (let i = 0; i < pains.length; i++) {
+    const el = document.getElementById(pains[i]);
+    el.style.opacity = 0;
+    el.style.transform = 'translateY(20px)';
+    await new Promise(r => setTimeout(r, i === 0 ? 100 : 500));
+    animate(el, {opacity: 1}, 300);
+    animate(el, {translateY: 0}, 300);
+  }
+  await new Promise(r => setTimeout(r, 1800));
+  await animate(document.getElementById('s2'), {opacity: 0}, 400);
+
+  // === ESCENA 3 — Logo ===
+  showScene('s3');
+  const logo = document.getElementById('logo-text');
+  logo.style.opacity = 0;
+  logo.style.filter = 'blur(16px)';
+  logo.style.transform = 'scale(0.85)';
+  await new Promise(r => setTimeout(r, 200));
+  animate(logo, {opacity: 1}, 700);
+  animate(logo, {blur: 0}, 700);
+  animate(logo, {scale: 1}, 700);
+  await new Promise(r => setTimeout(r, 800));
+  const tag = document.getElementById('logo-tag');
+  await animate(tag, {opacity: 1}, 500);
+  await new Promise(r => setTimeout(r, 1500));
+  await animate(document.getElementById('s3'), {opacity: 0}, 400);
+
+  // === ESCENA 4 — Servicios ===
+  showScene('s4');
+  const svs = ['sv1','sv2','sv3','sv4'];
+  for (let i = 0; i < svs.length; i++) {
+    const el = document.getElementById(svs[i]);
+    el.style.opacity = 0;
+    el.style.transform = 'translateX(60px)';
+    await new Promise(r => setTimeout(r, i === 0 ? 200 : 400));
+    animate(el, {opacity: 1}, 350);
+    animate(el, {translateX: 0}, 350);
+  }
+  await new Promise(r => setTimeout(r, 1800));
+  await animate(document.getElementById('s4'), {opacity: 0}, 400);
+
+  // === ESCENA 5 — Promesa ===
+  showScene('s5');
+  const prs = ['pr1','pr2'];
+  for (const id of prs) {
+    const el = document.getElementById(id);
+    el.style.opacity = 0;
+    el.style.transform = 'translateY(0)';
+  }
+  await new Promise(r => setTimeout(r, 300));
+  for (const id of prs) {
+    await animate(document.getElementById(id), {opacity: 1}, 400);
+    await new Promise(r => setTimeout(r, 300));
+  }
+  const pr3 = document.getElementById('pr3');
+  pr3.style.opacity = 1;
+  document.getElementById('cur').style.opacity = 1;
+  await new Promise(r => setTimeout(r, 2000));
+  await animate(document.getElementById('s5'), {opacity: 0}, 400);
+
+  // === ESCENA 6 — CTA ===
+  showScene('s6');
+  const line = document.getElementById('cta-line');
+  line.style.width = '0';
+  await new Promise(r => setTimeout(r, 300));
+  animate(line, {width: 120}, 600);
+  await new Promise(r => setTimeout(r, 500));
+  await animate(document.getElementById('cta-url'), {opacity: 1}, 500);
+  await new Promise(r => setTimeout(r, 300));
+  await animate(document.getElementById('cta-bio'), {opacity: 1}, 400);
+  await new Promise(r => setTimeout(r, 2500));
+
+  // Loop
+  document.getElementById('hint').textContent = '▶ reproducir de nuevo';
+  document.getElementById('hint').style.opacity = 1;
+  document.getElementById('stage').addEventListener('click', () => {
+    location.reload();
+  }, {once: true});
+}
+
+document.getElementById('stage').addEventListener('click', () => {
+  document.getElementById('hint').style.opacity = 0;
+  runSpot();
+}, {once: true});
+</script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXORA Intelligence - Lanzamiento</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+    }
+
+    #flyer {
+      width: 1080px;
+      height: 1080px;
+      position: relative;
+      background: #0A0E27;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .mesh-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(ellipse at 30% 40%, rgba(0, 245, 160, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 60%, rgba(0, 217, 255, 0.12) 0%, transparent 50%);
+      filter: blur(80px);
+    }
+
+    .grain {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .content {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px;
+    }
+
+    .logo-main {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 120px;
+      color: #00F5A0;
+      letter-spacing: -0.02em;
+      line-height: 0.9;
+      text-shadow: 0 0 50px rgba(0, 245, 160, 0.4);
+      margin-bottom: 10px;
+    }
+
+    .cursor {
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .logo-sub {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 48px;
+      color: #FFFFFF;
+      letter-spacing: -0.01em;
+      margin-bottom: 50px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(0, 245, 160, 0.1);
+      border: 2px solid #00F5A0;
+      color: #00F5A0;
+      padding: 12px 32px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 24px;
+      margin-bottom: 50px;
+      box-shadow: 0 0 30px rgba(0, 245, 160, 0.3);
+    }
+
+    .tagline {
+      margin-bottom: 50px;
+    }
+
+    .tagline p {
+      font-family: 'Inter', sans-serif;
+      font-size: 32px;
+      color: #FFFFFF;
+      line-height: 1.4;
+      margin: 8px 0;
+    }
+
+    .tagline .highlight {
+      color: #00F5A0;
+      font-weight: 600;
+    }
+
+    .services {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 50px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .service-item {
+      font-size: 22px;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .service-item::before {
+      content: '▸';
+      color: #00F5A0;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .website {
+      font-family: 'Outfit', sans-serif;
+      font-size: 36px;
+      color: #00F5A0;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .controls {
+      margin-top: 30px;
+      display: flex;
+      gap: 15px;
+    }
+
+    button {
+      padding: 14px 28px;
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    #downloadBtn {
+      background: #00F5A0;
+      color: #0A0E27;
+      box-shadow: 4px 4px 0px rgba(0, 245, 160, 0.3);
+    }
+
+    #downloadBtn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #00F5A0;
+    }
+
+    .info {
+      margin-top: 20px;
+      color: #A0A0A8;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="flyer">
+    <div class="mesh-bg"></div>
+    <div class="grain"></div>
+    
+    <div class="content">
+      <div class="logo-main">NEXORA<span class="cursor">_</span></div>
+      <div class="logo-sub">Intelligence</div>
+      
+      <div class="badge">🚀 Ya estamos online</div>
+      
+      <div class="tagline">
+        <p>&gt; Tu operación funciona.</p>
+        <p>&gt; Nosotros la hacemos <span class="highlight">escalar</span>.</p>
+      </div>
+      
+      <div class="services">
+        <div class="service-item">Desarrollo Web</div>
+        <div class="service-item">Apps a Medida</div>
+        <div class="service-item">Automatización</div>
+        <div class="service-item">Bots IA</div>
+      </div>
+      
+      <div class="website">nexoraintelligence.co</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="downloadBtn">⬇️ Descargar (1080x1080)</button>
+  </div>
+
+  <div class="info">
+    📱 Listo para Instagram/LinkedIn/Facebook
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <script>
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+      const flyer = document.getElementById('flyer');
+      const button = this;
+      
+      button.textContent = '⏳ Generando...';
+      button.disabled = true;
+      
+      html2canvas(flyer, {
+        width: 1080,
+        height: 1080,
+        scale: 2,
+        backgroundColor: '#0A0E27',
+        logging: false,
+        useCORS: true
+      }).then(canvas => {
+        canvas.toBlob(function(blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = 'nexora-lanzamiento-1080x1080.png';
+          link.href = url;
+          link.click();
+          
+          button.textContent = '✅ ¡Descargado!';
+          button.disabled = false;
+          
+          setTimeout(() => {
+            button.textContent = '⬇️ Descargar (1080x1080)';
+          }, 3000);
+        }, 'image/png');
+      });
+    });
+  </script>
+
+</body>
+</html>
+```

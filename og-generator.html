@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexora Intelligence - OG Image Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        #ogCanvas {
+            border: 2px solid #00F5A0;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0, 245, 160, 0.2);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #00F5A0;
+            color: #0A0E27;
+            border: none;
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        button:hover {
+            background: #00d88a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 245, 160, 0.3);
+        }
+
+        .info {
+            color: #F5F5F7;
+            margin-top: 24px;
+            font-size: 14px;
+            opacity: 0.7;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <canvas id="ogCanvas" width="1200" height="630"></canvas>
+        <div class="controls">
+            <button onclick="downloadImage()">⬇️ Descargar PNG (og-image.png)</button>
+            <button onclick="copyToClipboard()">📋 Copiar al portapapeles</button>
+        </div>
+        <p class="info">
+            Imagen Open Graph 1200×630px optimizada para WhatsApp, LinkedIn, Twitter y Facebook.<br>
+            Guardá como <strong>og-image.png</strong> en la carpeta /public de tu proyecto.
+        </p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('ogCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Función para cargar fuentes de Google Fonts
+        function loadFonts() {
+            return new Promise((resolve) => {
+                const link1 = document.createElement('link');
+                link1.href = 'https://fonts.googleapis.com/css2?family=Outfit:wght@800&display=swap';
+                link1.rel = 'stylesheet';
+                document.head.appendChild(link1);
+
+                const link2 = document.createElement('link');
+                link2.href = 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap';
+                link2.rel = 'stylesheet';
+                document.head.appendChild(link2);
+
+                // Esperar a que las fuentes carguen
+                setTimeout(resolve, 500);
+            });
+        }
+
+        async function drawOGImage() {
+            await loadFonts();
+
+            // Fondo base
+            ctx.fillStyle = '#0A0E27';
+            ctx.fillRect(0, 0, 1200, 630);
+
+            // Dot grid pattern (sutil)
+            ctx.fillStyle = 'rgba(245, 245, 247, 0.03)';
+            const dotSize = 2;
+            const spacing = 24;
+            for (let x = 0; x < 1200; x += spacing) {
+                for (let y = 0; y < 630; y += spacing) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, dotSize, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Gradiente mesh (esquina superior derecha)
+            const gradient1 = ctx.createRadialGradient(1020, 95, 0, 1020, 95, 400);
+            gradient1.addColorStop(0, 'rgba(0, 245, 160, 0.12)');
+            gradient1.addColorStop(0.5, 'rgba(0, 217, 255, 0.08)');
+            gradient1.addColorStop(1, 'rgba(0, 245, 160, 0)');
+            ctx.fillStyle = gradient1;
+            ctx.fillRect(0, 0, 1200, 630);
+
+            // Gradiente mesh (esquina inferior izquierda)
+            const gradient2 = ctx.createRadialGradient(180, 535, 0, 180, 535, 350);
+            gradient2.addColorStop(0, 'rgba(0, 217, 255, 0.1)');
+            gradient2.addColorStop(1, 'rgba(0, 217, 255, 0)');
+            ctx.fillStyle = gradient2;
+            ctx.fillRect(0, 0, 1200, 630);
+
+            // Acento gráfico: línea vertical coral
+            ctx.fillStyle = '#FF3D71';
+            ctx.fillRect(90, 180, 3, 280);
+
+            // Glow para el logo (blur effect simulado)
+            ctx.shadowBlur = 40;
+            ctx.shadowColor = 'rgba(0, 245, 160, 0.4)';
+            ctx.fillStyle = '#00F5A0';
+            ctx.shadowBlur = 0; // Reset para el texto real
+
+            // Logo NEXORA_Intelligence
+            ctx.font = '800 68px Outfit, sans-serif';
+            ctx.fillStyle = '#00F5A0';
+            ctx.textAlign = 'left';
+
+            // Simulación de glow (dibujamos varias veces con blur)
+            ctx.save();
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = 'rgba(0, 245, 160, 0.6)';
+            ctx.fillText('NEXORA_', 120, 200);
+            ctx.restore();
+
+            ctx.fillStyle = '#00F5A0';
+            ctx.fillText('NEXORA_', 120, 200);
+
+            // Tagline línea 1
+            ctx.font = '800 46px Outfit, sans-serif';
+            ctx.fillStyle = '#F5F5F7';
+            ctx.fillText('Tu operación funciona.', 120, 290);
+
+            // Tagline línea 2
+            ctx.fillText('Nosotros la hacemos ', 120, 350);
+
+            // Palabra "escalar" en verde neón
+            const textoAntes = 'Nosotros la hacemos ';
+            const anchoAntes = ctx.measureText(textoAntes).width;
+            ctx.fillStyle = '#00F5A0';
+            ctx.fillText('escalar.', 120 + anchoAntes, 350);
+
+            // URL
+            ctx.font = '400 22px "JetBrains Mono", monospace';
+            ctx.fillStyle = 'rgba(0, 217, 255, 0.9)';
+            ctx.fillText('www.nexoraintelligence.co', 120, 450);
+
+            // Elemento gráfico decorativo (grid lines estilo tech)
+            ctx.strokeStyle = 'rgba(0, 245, 160, 0.15)';
+            ctx.lineWidth = 1;
+
+            // Líneas horizontales decorativas
+            ctx.beginPath();
+            ctx.moveTo(950, 300);
+            ctx.lineTo(1080, 300);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(950, 330);
+            ctx.lineTo(1080, 330);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(950, 360);
+            ctx.lineTo(1040, 360);
+            ctx.stroke();
+
+            // Pequeños cuadrados decorativos
+            ctx.strokeStyle = 'rgba(0, 217, 255, 0.2)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(950, 400, 20, 20);
+            ctx.strokeRect(980, 400, 20, 20);
+            ctx.strokeRect(1010, 400, 20, 20);
+
+            // Grain texture (simulado con noise pattern)
+            addGrainTexture();
+        }
+
+        function addGrainTexture() {
+            const imageData = ctx.getImageData(0, 0, 1200, 630);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                const noise = (Math.random() - 0.5) * 8; // Grain sutil
+                data[i] += noise;     // R
+                data[i + 1] += noise; // G
+                data[i + 2] += noise; // B
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function downloadImage() {
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'og-image.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // Feedback visual
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Descargado!';
+                btn.style.background = '#00F5A0';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }, 'image/png', 0.95);
+        }
+
+        async function copyToClipboard() {
+            try {
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 0.95));
+                await navigator.clipboard.write([
+                    new ClipboardItem({ 'image/png': blob })
+                ]);
+
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copiado!';
+                btn.style.background = '#00F5A0';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            } catch (err) {
+                alert('No se pudo copiar. Usá el botón de descarga.');
+            }
+        }
+
+        // Dibujar la imagen al cargar la página
+        drawOGImage();
+    </script>
+</body>
+</html>
